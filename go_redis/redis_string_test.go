@@ -16,9 +16,44 @@ func TestBinarySecurity(t *testing.T) {
 
 func TestAppend(t *testing.T) {
 	const key = "test:append:key"
-	client.Append(ctx, key, "Hello")
-	client.Append(ctx, key, " World")
+	defer client.Del(ctx, key)
+	res := client.Append(ctx, key, "Hello")
+	t.Log(res)
+	res = client.Append(ctx, key, " World")
+	t.Log(res.Result())
 	t.Log(client.Get(ctx, key))
+	// Append 裁剪字符串的功能
+	res2 := client.GetRange(ctx, key, 3, 4)
+	t.Log(res2)
+}
+
+func TestDecr(t *testing.T) {
+	const key = "test:decr:key"
+	defer client.Del(ctx, key)
+	res := client.Decr(ctx, key)
+	t.Log(res)
+	client.Set(ctx, key, 10, 0)
+	res = client.Decr(ctx, key)
+	t.Log(res)
+	client.Set(ctx, key, "234293482390480948029348230948", 0)
+	res = client.Decr(ctx, key)
+	t.Log(res)
+}
+
+func TestGet(t *testing.T) {
+	const key = "test:get:key"
+	res := client.Get(ctx, key)
+	t.Log(res)
+	res2 := client.Set(ctx, key, "Hello", 0)
+	t.Log(res2)
+	res = client.Get(ctx, key)
+	t.Log(res)
+}
+
+func TestDecrBy(t *testing.T) {
+	const key = "test:decr:key"
+	res := client.DecrBy(ctx, key, 3)
+	t.Log(res)
 }
 
 func TestNX(t *testing.T) {
