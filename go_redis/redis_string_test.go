@@ -92,6 +92,29 @@ func TestGetRange(t *testing.T) {
 	t.Log(res)
 }
 
+func TestIncr(t *testing.T) {
+	client.Set(ctx, "counter", "1", 0)
+	client.Incr(ctx, "counter")
+	t.Log(client.Get(ctx, "counter"))
+}
+
+func TestIncrBy(t *testing.T) {
+	client.IncrBy(ctx, "counter", 10)
+	t.Log(client.Get(ctx, "counter"))
+}
+
+func TestIncrByFloat(t *testing.T) {
+	const key = "test:incrByFloat:key"
+	client.Set(ctx, key, 10.5, 0)
+	res := client.IncrByFloat(ctx, key, 0.1)
+	t.Log(res)
+	res = client.IncrByFloat(ctx, key, -5)
+	t.Log(res)
+	client.Set(ctx, key, 5.0e3, 0)
+	res = client.IncrByFloat(ctx, key, 2.0e2)
+	t.Log(res)
+}
+
 func TestNX(t *testing.T) {
 	res := client.SetNX(ctx, "test:str:nx", "new_value1", 0)
 	t.Log(res)
@@ -108,20 +131,6 @@ func TestGetLock(t *testing.T) {
 	go GetLock("xiao ming")
 	time.Sleep(time.Second)
 	client.Del(ctx, "mutex")
-}
-
-func TestIncr(t *testing.T) {
-	client.Set(ctx, "counter", "1", 0)
-	client.Incr(ctx, "counter")
-	t.Log(client.Get(ctx, "counter"))
-	client.IncrBy(ctx, "counter", 10)
-	t.Log(client.Get(ctx, "counter"))
-}
-
-func TestGetSet(t *testing.T) {
-	res := client.GetSet(ctx, "counter", -1)
-	t.Log(res.Val())
-	t.Log(client.Get(ctx, "counter"))
 }
 
 func TestGetLockV2(t *testing.T) {
