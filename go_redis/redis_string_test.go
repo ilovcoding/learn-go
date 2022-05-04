@@ -6,11 +6,19 @@ import (
 	"time"
 )
 
+// 二进制安全
 func TestBinarySecurity(t *testing.T) {
 	client.Set(ctx, "", "空字符串", 0)
 	t.Log(client.Get(ctx, ""))
 	client.Set(ctx, "\\0", "zero", 0)
 	t.Log(client.Get(ctx, "\\0"))
+}
+
+func TestAppend(t *testing.T) {
+	const key = "test:append:key"
+	client.Append(ctx, key, "Hello")
+	client.Append(ctx, key, " World")
+	t.Log(client.Get(ctx, key))
 }
 
 func TestNX(t *testing.T) {
@@ -29,6 +37,20 @@ func TestGetLock(t *testing.T) {
 	go GetLock("xiao ming")
 	time.Sleep(time.Second)
 	client.Del(ctx, "mutex")
+}
+
+func TestIncr(t *testing.T) {
+	client.Set(ctx, "counter", "1", 0)
+	client.Incr(ctx, "counter")
+	t.Log(client.Get(ctx, "counter"))
+	client.IncrBy(ctx, "counter", 10)
+	t.Log(client.Get(ctx, "counter"))
+}
+
+func TestGetSet(t *testing.T) {
+	res := client.GetSet(ctx, "counter", -1)
+	t.Log(res.Val())
+	t.Log(client.Get(ctx, "counter"))
 }
 
 func TestGetLockV2(t *testing.T) {
