@@ -115,6 +115,19 @@ func TestIncrByFloat(t *testing.T) {
 	t.Log(res)
 }
 
+// redis 7.0 新增 api，求字符串的最长相同子序列，当时和最长相同子序列算法要求不同，redis中不要求对比的字符串中的字符是连续的
+// Time complexity: O(N*M) where N and M are the lengths of s1 and s2
+// 优势是可以很方便的查看两个字符串的相似程度
+// 例如使用字符串表示DNA序列，LCS 可以很方便的表示出两条DNA序列的相似程度
+// 如果表示用户编辑的文本，LCS 可以方便比较出新旧文档的差异
+// 具体可以查看文档 具体可以查看文档 https://redis.io/commands/lcs/
+func TestLcs(t *testing.T) {
+	client.MSet(ctx, "key1", "ohmytext", "key2", "mynewtext")
+	// go-redis v8.11.5 客户端暂时不支持该命令
+	//res := client.Lcs(ctx, "key1", "key2")
+	//t.Log(res) // "mytext"
+}
+
 func TestNX(t *testing.T) {
 	res := client.SetNX(ctx, "test:str:nx", "new_value1", 0)
 	t.Log(res)
