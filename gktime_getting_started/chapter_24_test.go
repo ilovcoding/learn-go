@@ -40,3 +40,43 @@ func TestFuncAsValue(t *testing.T) {
 	funcAdd := fun1
 	t.Log(funcAdd(1, 10))
 }
+
+func Sum(params ...int) int {
+	count := 0
+	for _, num := range params {
+		count += num
+	}
+	return count
+}
+
+func TestSum(t *testing.T) {
+	t.Log(Sum(1, 2, 3, 4))
+	t.Log(Sum(1, 2, 3, 4, 5, 6))
+}
+
+func deferFun() int {
+	var num = 1
+	defer func() {
+		num += 4
+		fmt.Println(num)
+	}()
+	num += 1
+	fmt.Println(num)
+	return num
+}
+func TestDefer(t *testing.T) {
+	t.Log(deferFun())
+}
+
+func TestMultipleDefer(t *testing.T) {
+	defer func() {
+		fmt.Println("defer1")
+	}()
+	defer func() {
+		fmt.Println("defer2")
+	}()
+	defer func() {
+		fmt.Println("defer3")
+	}()
+	fmt.Println("multiple defer")
+}
