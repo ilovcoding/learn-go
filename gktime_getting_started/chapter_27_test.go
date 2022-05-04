@@ -1,1 +1,0 @@
-package gktime_getting_started

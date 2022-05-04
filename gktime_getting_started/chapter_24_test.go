@@ -64,6 +64,7 @@ func deferFun() int {
 	fmt.Println(num)
 	return num
 }
+
 func TestDefer(t *testing.T) {
 	t.Log(deferFun())
 }
@@ -79,4 +80,20 @@ func TestMultipleDefer(t *testing.T) {
 		fmt.Println("defer3")
 	}()
 	fmt.Println("multiple defer")
+}
+
+func TestPanic(t *testing.T) {
+	if err := recover(); err != nil {
+		fmt.Println("error is ", err)
+	}
+	panic("unknown error")
+}
+
+func TestPanicWithDefer(t *testing.T) {
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println("error is ", err)
+		}
+	}()
+	panic("unknown error")
 }
