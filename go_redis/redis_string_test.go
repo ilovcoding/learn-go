@@ -56,6 +56,29 @@ func TestDecrBy(t *testing.T) {
 	t.Log(res)
 }
 
+func TestGetDel(t *testing.T) {
+	const key = "test:getDel:key"
+	client.Set(ctx, key, 10, 0)
+	res := client.GetDel(ctx, key)
+	t.Log(res)
+	client.HSet(ctx, key, "key1", "value1")
+	//	 WRONGTYPE Operation against a key holding the wrong kind of value
+	// 当且仅当 value 的 type 是 string 的时候才能使用 GetDel 否则会返回错误
+	res2 := client.GetDel(ctx, key)
+	t.Log(res2)
+}
+
+func TestGetEx(t *testing.T) {
+	const key = "test:getEx:key"
+	client.Set(ctx, key, "Hello", 0)
+	// -1纳秒 永不过期
+	t.Log(client.TTL(ctx, key).Val())
+	res := client.GetEx(ctx, key, time.Second*60)
+	t.Log(res)
+	// 1分0秒 60s 过期
+	t.Log(client.TTL(ctx, key).Val())
+}
+
 func TestNX(t *testing.T) {
 	res := client.SetNX(ctx, "test:str:nx", "new_value1", 0)
 	t.Log(res)
