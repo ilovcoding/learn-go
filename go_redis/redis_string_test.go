@@ -79,6 +79,19 @@ func TestGetEx(t *testing.T) {
 	t.Log(client.TTL(ctx, key).Val())
 }
 
+func TestGetRange(t *testing.T) {
+	const key = "test:getRange:key"
+	client.Set(ctx, key, "This is a string", 0)
+	res := client.GetRange(ctx, key, 0, 3)
+	t.Log(res)
+	res = client.GetRange(ctx, key, -3, -1)
+	t.Log(res)
+	res = client.GetRange(ctx, key, 0, -1)
+	t.Log(res)
+	res = client.GetRange(ctx, key, 10, 100)
+	t.Log(res)
+}
+
 func TestNX(t *testing.T) {
 	res := client.SetNX(ctx, "test:str:nx", "new_value1", 0)
 	t.Log(res)
