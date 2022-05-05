@@ -239,3 +239,10 @@ func TestSetRange(t *testing.T) {
 	client.SetRange(ctx, key2, 6, "Redis")
 	t.Log(client.Get(ctx, key2))
 }
+
+func TestStrLen(t *testing.T) {
+	key := "test:strLen:key"
+	client.Set(ctx, key, "Hello World", 0)
+	t.Log(client.StrLen(ctx, key))
+	t.Log(client.StrLen(ctx, "noExitString"))
+}
