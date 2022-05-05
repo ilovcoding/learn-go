@@ -1,6 +1,7 @@
 package go_redis
 
 import (
+	"fmt"
 	"sync"
 	"testing"
 	"time"
@@ -165,15 +166,23 @@ func TestMSetNx(t *testing.T) {
 	t.Log(res2)
 }
 
-func TestNX(t *testing.T) {
+func TestSetEX(t *testing.T) {
+	const key = "test:setEx:key"
+	client.SetEX(ctx, key, "Hello", time.Second*10)
+	t.Log(client.TTL(ctx, key))
+	t.Log(client.Get(ctx, key))
+}
+
+// https://redis.io/commands/set/ 在 redis 官网中set命令的介绍中有如下介绍
+// The command SET resource-name anystring NX EX max-lock-time is a simple way to implement a locking system with Redis.
+// 可以使用SetNx 很方便的实现 Redis 锁
+func TestSetNX(t *testing.T) {
 	res := client.SetNX(ctx, "test:str:nx", "new_value1", 0)
 	t.Log(res)
 	res2 := client.SetNX(ctx, "test:str:nx", "new_value2", 0)
 	t.Log(res2)
 	t.Log(client.Get(ctx, "test:str:nx"))
 }
-
-var getLockWg sync.WaitGroup
 
 func TestGetLock(t *testing.T) {
 	go GetLock("zhang san")
@@ -182,6 +191,19 @@ func TestGetLock(t *testing.T) {
 	time.Sleep(time.Second)
 	client.Del(ctx, "mutex")
 }
+
+func GetLock(user string) {
+	lock := "mutex"
+	res := client.SetNX(ctx, lock, user, 0)
+	if res.Val() == false {
+		owner := client.Get(ctx, lock)
+		fmt.Printf("user %s get lock fail, lock owner is %s \n", user, owner.Val())
+	} else {
+		fmt.Printf("i get a lock, i am %s \n", user)
+	}
+}
+
+var getLockWg sync.WaitGroup
 
 func TestGetLockV2(t *testing.T) {
 	getLockWg.Add(1)
