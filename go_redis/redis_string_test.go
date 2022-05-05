@@ -224,3 +224,18 @@ func TestGetLockV2(t *testing.T) {
 	getLockWg.Wait()
 	client.Del(ctx, "mutex")
 }
+
+//随机设置某些位置的字符串
+//第一次设置时候需要开辟内存空间，第二次不需要了（如果在旧的offset上修改，没有增加新的就不需要）
+// 2010 MacBook Pro 上测试 512MB 大概需要300ms 128MB大概需要80ms 32MB 大概需要30ms 8MB 大概需要8ms
+func TestSetRange(t *testing.T) {
+	const (
+		key  = "test:setRange:key1"
+		key2 = "test:setRange:key2"
+	)
+	client.Set(ctx, key, "Hello World", 0)
+	client.SetRange(ctx, key, 6, "Redis")
+	t.Log(client.Get(ctx, key))
+	client.SetRange(ctx, key2, 6, "Redis")
+	t.Log(client.Get(ctx, key2))
+}
