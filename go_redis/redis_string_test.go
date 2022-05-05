@@ -128,6 +128,25 @@ func TestLcs(t *testing.T) {
 	//t.Log(res) // "mytext"
 }
 
+func TestMGet(t *testing.T) {
+	const key1 = "test:mGet:key1"
+	const key2 = "test:mGet:key2"
+	client.Set(ctx, key1, "Hello", 0)
+	client.Set(ctx, key2, "World", 0)
+	res := client.MGet(ctx, key1, key2, "noExistString")
+	t.Log(res)
+}
+
+func TestMSet(t *testing.T) {
+	const key1 = "test:mSet:key1"
+	const key2 = "test:mSet:key2"
+	client.MSet(ctx, key1, "Hello", key2, "World")
+	res := client.Get(ctx, key1)
+	t.Log(res)
+	res = client.Get(ctx, key2)
+	t.Log(res)
+}
+
 func TestNX(t *testing.T) {
 	res := client.SetNX(ctx, "test:str:nx", "new_value1", 0)
 	t.Log(res)
