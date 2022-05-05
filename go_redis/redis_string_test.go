@@ -147,6 +147,24 @@ func TestMSet(t *testing.T) {
 	t.Log(res)
 }
 
+// 当且仅当批量设置的key的值都不存在，才可以批量设置成功
+//  MSETNX 返回值是1,所有的值设置成功
+//  MSETNX 返回值是0，设置失败（至少有一个值之前已经存在了）
+// 在 go-redis 客户端中 成功返回的是 true 失败返回的是 false
+func TestMSetNx(t *testing.T) {
+	defer func() {
+		client.Del(ctx, "key1")
+		client.Del(ctx, "key2")
+		client.Del(ctx, "key3")
+	}()
+	res := client.MSetNX(ctx, "key1", "Hello", "key2", "there")
+	t.Log(res)
+	res = client.MSetNX(ctx, "key2", "new", "key3", "World")
+	t.Log(res)
+	res2 := client.MGet(ctx, "key1", "key2", "key3")
+	t.Log(res2)
+}
+
 func TestNX(t *testing.T) {
 	res := client.SetNX(ctx, "test:str:nx", "new_value1", 0)
 	t.Log(res)
