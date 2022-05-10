@@ -52,10 +52,12 @@ const testExpireKey = "test:expire:key"
 /** 设置超时时间而且时间会记录到磁盘中，因为记录的是日期时间所有服务就算重启停止了，在这过程中超时计算依然存在 **/
 func TestKeyExpiration(t *testing.T) {
 	client.Set(ctx, testExpireKey, "some-value", 0)
-	client.Expire(ctx, testExpireKey, time.Second*60*5)
+	t.Log(client.TTL(ctx, testExpireKey))
+	client.Expire(ctx, testExpireKey, time.Second*5)
 }
 
 func TestTTL(t *testing.T) {
 	res := client.TTL(ctx, testExpireKey)
+	t.Log(client.Get(ctx, testExpireKey))
 	t.Log(res)
 }
