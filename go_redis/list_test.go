@@ -34,6 +34,24 @@ func TestBLMove(t *testing.T) {
 }
 
 /**
+Available since: 7.0.0
+Time complexity: O(N+M) where N is the number of provided keys and M is the number of elements returned.
+key 中有元素的时候 BLMPOP 和 LMPOP 一样，当key中无元素时会阻塞操作直到key中有元素。
+具体使用可参考 TestLMPop
+*/
+func TestBLMPop(t *testing.T) {
+	//
+}
+
+//  LPUSH mylist "one" "two" "three" "four" "five"
+// LPUSH mylist2 "a" "b" "c" "d" "e"
+// LMPOP 2 mylist mylist2  left count  10 从 两个 list 的 左边出栈10个元素，优先从 mylist 中选，
+// 由于 mylist 中只有5个元素 所以这一次最多只能输出5个，结果是 [five four three two one]
+func TestLMPop(t *testing.T) {
+	//
+}
+
+/**
 Available since: 6.2.0
 Time complexity: O(1)
 LMOVE source destination LEFT | RIGHT LEFT | RIGHT
