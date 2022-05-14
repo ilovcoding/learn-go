@@ -43,6 +43,7 @@ func TestBLMPop(t *testing.T) {
 	//
 }
 
+// 多client Pop 数据非广播,优先让 Block 时间长的返回数据 FIFO
 func TestBLPop(t *testing.T) {
 	key := "test:blpop:key"
 	key2 := "test:blpop:key2"
@@ -51,12 +52,25 @@ func TestBLPop(t *testing.T) {
 	}()
 	client.RPush(ctx, key, "one")
 	client.RPush(ctx, key2, "a")
-	res := client.BLPop(ctx, time.Second*5, key, key2)
+	res := client.BLPop(ctx, time.Second*2, key, key2)
 	t.Log(res)
-	res = client.BLPop(ctx, time.Second*5, key, key2)
+	res = client.BLPop(ctx, time.Second*2, key, key2)
 	t.Log(res)
-	res = client.BLPop(ctx, time.Second*5, key, key2)
+	res = client.BLPop(ctx, time.Second*2, key, key2)
 	t.Log(res)
+	go func() {
+		res = client.BLPop(ctx, 0, key, key2)
+		t.Log(res)
+	}()
+	go func() {
+		time.Sleep(time.Second * 1)
+		res = client.BLPop(ctx, 0, key2)
+		t.Log(res)
+	}()
+	time.Sleep(time.Second * 3)
+	client.LPush(ctx, key2, "value1")
+	time.Sleep(time.Second * 5)
+
 }
 
 //  LPUSH mylist "one" "two" "three" "four" "five"
