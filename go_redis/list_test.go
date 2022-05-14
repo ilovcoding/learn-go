@@ -73,6 +73,17 @@ func TestBLPop(t *testing.T) {
 
 }
 
+func TestBRPop(t *testing.T) {
+	key := "test:brpop:key"
+	key2 := "test:brpop:key2"
+	defer func() {
+		client.Del(ctx, key, key2)
+	}()
+	client.RPush(ctx, key, "a", "b", "c")
+	res := client.BRPop(ctx, 0, key, key2)
+	t.Log(res)
+}
+
 //  LPUSH mylist "one" "two" "three" "four" "five"
 // LPUSH mylist2 "a" "b" "c" "d" "e"
 // LMPOP 2 mylist mylist2  left count  10 从 两个 list 的 左边出栈10个元素，优先从 mylist 中选，
