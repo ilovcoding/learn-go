@@ -84,6 +84,18 @@ func TestBRPop(t *testing.T) {
 	t.Log(res)
 }
 
+// List 支持正负两个方向索引，操作时间复杂度 O(n)
+func TestLIndex(t *testing.T) {
+	key := "test:LIndex:key"
+	client.LPush(ctx, key, "World", "Hello")
+	res := client.LIndex(ctx, key, 0)
+	t.Log(res)
+	res = client.LIndex(ctx, key, -1)
+	t.Log(res)
+	res = client.LIndex(ctx, key, 3)
+	t.Log(res)
+}
+
 //  LPUSH mylist "one" "two" "three" "four" "five"
 // LPUSH mylist2 "a" "b" "c" "d" "e"
 // LMPOP 2 mylist mylist2  left count  10 从 两个 list 的 左边出栈10个元素，优先从 mylist 中选，
