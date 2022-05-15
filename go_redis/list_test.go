@@ -167,3 +167,31 @@ func TestLPos(t *testing.T) {
 	t.Log(client.LPos(ctx, key, "3", redis.LPosArgs{Rank: 0}))
 	t.Log(client.LPosCount(ctx, key, "3", 0, redis.LPosArgs{Rank: 2}))
 }
+
+func TestLPush(t *testing.T) {
+	key := "test:LPushX:key"
+	defer func() {
+		client.Del(ctx, key)
+	}()
+	client.LPushX(ctx, key, "World", "Hello")
+	t.Log(client.LRange(ctx, key, 0, -1))
+	client.LPush(ctx, key, "World")
+	client.LPushX(ctx, key, "Hello")
+	t.Log(client.LRange(ctx, key, 0, -1))
+}
+
+func TestLRem(t *testing.T) {
+	key := "test:LRem:key"
+	client.RPush(ctx, key, "Hello", "Hello", "Foo", "Hello")
+	t.Log(client.LRem(ctx, key, -2, "Hello"))
+	t.Log(client.LRange(ctx, key, 0, -1))
+}
+
+func TestLSet(t *testing.T) {
+	key := "test:LSet:key"
+	client.RPush(ctx, key, "one", "two", "three")
+	client.LSet(ctx, key, 0, "four")
+	t.Log(client.LRange(ctx, key, 0, -1))
+	client.LSet(ctx, key, -2, "five")
+	t.Log(client.LRange(ctx, key, 0, -1))
+}
