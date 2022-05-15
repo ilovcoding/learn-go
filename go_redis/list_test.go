@@ -1,6 +1,7 @@
 package go_redis
 
 import (
+	"github.com/go-redis/redis/v8"
 	"testing"
 	"time"
 )
@@ -109,14 +110,6 @@ func TestLLen(t *testing.T) {
 	t.Log(client.LLen(ctx, key))
 }
 
-//  LPUSH mylist "one" "two" "three" "four" "five"
-// LPUSH mylist2 "a" "b" "c" "d" "e"
-// LMPOP 2 mylist mylist2  left count  10 从 两个 list 的 左边出栈10个元素，优先从 mylist 中选，
-// 由于 mylist 中只有5个元素 所以这一次最多只能输出5个，结果是 [five four three two one]
-func TestLMPop(t *testing.T) {
-	//
-}
-
 /**
 Available since: 6.2.0
 Time complexity: O(1)
@@ -147,4 +140,30 @@ func TestLMove(t *testing.T) {
 	client.LMove(ctx, key2, key2, "LEFT", "RIGHT")
 	res = client.LRange(ctx, key2, 0, -1)
 	t.Log(res)
+}
+
+//  LPUSH mylist "one" "two" "three" "four" "five"
+// LPUSH mylist2 "a" "b" "c" "d" "e"
+// LMPOP 2 mylist mylist2  left count  10 从 两个 list 的 左边出栈10个元素，优先从 mylist 中选，
+// 由于 mylist 中只有5个元素 所以这一次最多只能输出5个，结果是 [five four three two one]
+func TestLMPop(t *testing.T) {
+	//
+}
+
+func TestLPop(t *testing.T) {
+	key := "test:l_pop:key"
+	client.RPush(ctx, key, "one", "two", "three", "four", "five")
+	t.Log(client.LPop(ctx, key))
+	t.Log(client.LPopCount(ctx, key, 2))
+	t.Log(client.LRange(ctx, key, 0, -1))
+}
+
+func TestLPos(t *testing.T) {
+	key := "test:l_pos:key"
+	defer func() {
+		client.Del(ctx, key)
+	}()
+	client.RPush(ctx, key, "a", "b", "c", "d", "1", "2", "3", "4", "3", "3", "3")
+	t.Log(client.LPos(ctx, key, "3", redis.LPosArgs{Rank: 0}))
+	t.Log(client.LPosCount(ctx, key, "3", 0, redis.LPosArgs{Rank: 2}))
 }
