@@ -103,6 +103,12 @@ func TestLInsert(t *testing.T) {
 	t.Log(client.LRange(ctx, key, 0, -1))
 }
 
+func TestLLen(t *testing.T) {
+	key := "test:LLen:key"
+	client.RPush(ctx, key, "Hello", "World")
+	t.Log(client.LLen(ctx, key))
+}
+
 //  LPUSH mylist "one" "two" "three" "four" "five"
 // LPUSH mylist2 "a" "b" "c" "d" "e"
 // LMPOP 2 mylist mylist2  left count  10 从 两个 list 的 左边出栈10个元素，优先从 mylist 中选，
