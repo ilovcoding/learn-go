@@ -203,3 +203,17 @@ func TestLTrim(t *testing.T) {
 	res := client.LRange(ctx, key, 0, -1)
 	t.Log(res)
 }
+
+func TestRPushX(t *testing.T) {
+	key := "test:RPushX:key"
+	defer func() {
+		client.Del(ctx, key)
+	}()
+	client.RPushX(ctx, key, "Hello", "World")
+	res := client.LRange(ctx, key, 0, -1)
+	t.Log(res)
+	client.RPush(ctx, key, "Hello")
+	client.RPushX(ctx, key, "World")
+	res = client.LRange(ctx, key, 0, -1)
+	t.Log(res)
+}
