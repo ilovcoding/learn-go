@@ -195,3 +195,11 @@ func TestLSet(t *testing.T) {
 	client.LSet(ctx, key, -2, "five")
 	t.Log(client.LRange(ctx, key, 0, -1))
 }
+
+func TestLTrim(t *testing.T) {
+	key := "test:LTrim:key"
+	client.RPush(ctx, key, "one", "two", "three")
+	client.LTrim(ctx, key, 1, -1)
+	res := client.LRange(ctx, key, 0, -1)
+	t.Log(res)
+}
