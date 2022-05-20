@@ -43,7 +43,7 @@ func TestHIncrBy(t *testing.T) {
 	t.Log(res)
 }
 
-func TestHSet(t *testing.T) {
+func TestHIncrByFloat(t *testing.T) {
 	client.HSet(ctx, key, "field", 10.50)
 	res := client.HIncrByFloat(ctx, key, "field", 0.1)
 	t.Log(res)
@@ -85,5 +85,30 @@ func TestHRandField(t *testing.T) {
 	res = client.HRandField(ctx, key, -5, false)
 	t.Log(res)
 	res = client.HRandField(ctx, key, -5, true)
+	t.Log(res)
+}
+
+func TestHSet(t *testing.T) {
+	client.HSet(ctx, key, "field1", "Hello")
+	res := client.HGet(ctx, key, "field1")
+	t.Log(res)
+}
+
+func TestHSetNX(t *testing.T) {
+	defer func() {
+		client.Del(ctx, key)
+	}()
+	client.HSetNX(ctx, key, "field", "Hello")
+	client.HSetNX(ctx, key, "field", "World")
+	res := client.HGet(ctx, key, "field")
+	t.Log(res)
+}
+
+func TestHValS(t *testing.T) {
+	client.HSet(ctx, key, "field1", "Hello")
+	client.HSet(ctx, key, "field2", "World")
+	res := client.HVals(ctx, key)
+	t.Log(res)
+	res = client.HVals(ctx, "noKwy")
 	t.Log(res)
 }
