@@ -125,3 +125,23 @@ func TestSRem(t *testing.T) {
 	res3 := client.SMembers(ctx, key)
 	t.Log(res3)
 }
+
+func TestSUnion(t *testing.T) {
+	key1 := "test:SUnion:key1"
+	key2 := "test:SUnion:key2"
+	client.SAdd(ctx, key1, "one", "two", "three")
+	client.SAdd(ctx, key2, "one", "four", "five")
+	res := client.SUnion(ctx, key1, key2)
+	t.Log(res)
+}
+
+func TestSUnionStore(t *testing.T) {
+	key1 := "test:SUnionStore:key1"
+	key2 := "test:SUnionStore:key2"
+	key := "test:SUnionStore:key"
+	client.SAdd(ctx, key1, "one", "two", "three")
+	client.SAdd(ctx, key2, "one", "four", "five")
+	client.SUnionStore(ctx, key, key1, key2)
+	res := client.SMembers(ctx, key)
+	t.Log(res)
+}
