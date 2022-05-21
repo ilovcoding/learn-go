@@ -72,7 +72,20 @@ func TestSIsMember(t *testing.T) {
 }
 
 func TestSMIsMember(t *testing.T) {
-	client.SAdd(ctx, key, "one")
-	res := client.SMIsMember(ctx, key, "one", "notAMember")
+	client.SAdd(ctx, setKey, "one")
+	res := client.SMIsMember(ctx, setKey, "one", "notAMember")
 	t.Log(res)
+}
+
+func TestSMove(t *testing.T) {
+	defer func() {
+		client.Del(ctx, setKey)
+	}()
+	client.SAdd(ctx, setKey, "one")
+	client.SAdd(ctx, setKey, "two")
+	client.SAdd(ctx, "myOtherSet", "three")
+	client.SMove(ctx, setKey, "myOtherSet", "two")
+	t.Log(client.SMembers(ctx, setKey))
+	t.Log(client.SMembers(ctx, "myOtherSet"))
+
 }
