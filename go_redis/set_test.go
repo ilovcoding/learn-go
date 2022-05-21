@@ -61,3 +61,18 @@ func TestSInterStore(t *testing.T) {
 	res2 := client.SMembers(ctx, key)
 	t.Log(res2)
 }
+
+// O(1)
+func TestSIsMember(t *testing.T) {
+	client.SAdd(ctx, key, "one")
+	res := client.SIsMember(ctx, key, "one")
+	t.Log(res)
+	res = client.SIsMember(ctx, key, "two")
+	t.Log(res)
+}
+
+func TestSMIsMember(t *testing.T) {
+	client.SAdd(ctx, key, "one")
+	res := client.SMIsMember(ctx, key, "one", "notAMember")
+	t.Log(res)
+}
