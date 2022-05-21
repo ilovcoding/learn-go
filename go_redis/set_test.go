@@ -114,3 +114,14 @@ func TestSRandMember(t *testing.T) {
 	res3 := client.SRandMemberN(ctx, key, -5)
 	t.Log(res3)
 }
+
+func TestSRem(t *testing.T) {
+	key := "test:SRem:key"
+	client.SAdd(ctx, key, "one", "two", "three")
+	res := client.SRem(ctx, key, "one")
+	t.Log(res)
+	res2 := client.SRem(ctx, key, "four")
+	t.Log(res2)
+	res3 := client.SMembers(ctx, key)
+	t.Log(res3)
+}
