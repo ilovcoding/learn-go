@@ -103,3 +103,14 @@ func TestSPop(t *testing.T) {
 	res2 = client.SMembers(ctx, key)
 	t.Log(res2)
 }
+
+func TestSRandMember(t *testing.T) {
+	key := "test:sRandMember:key"
+	client.SAdd(ctx, key, "one", "two", "three")
+	res := client.SRandMember(ctx, key)
+	t.Log(res)
+	res2 := client.SRandMemberN(ctx, key, 2)
+	t.Log(res2)
+	res3 := client.SRandMemberN(ctx, key, -5)
+	t.Log(res3)
+}
