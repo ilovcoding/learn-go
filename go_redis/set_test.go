@@ -89,3 +89,17 @@ func TestSMove(t *testing.T) {
 	t.Log(client.SMembers(ctx, "myOtherSet"))
 
 }
+
+func TestSPop(t *testing.T) {
+	key := "test:key:sPop"
+	client.SAdd(ctx, key, "one", "two", "three")
+	res := client.SPop(ctx, key)
+	t.Log(res)
+	res2 := client.SMembers(ctx, key)
+	t.Log(res2)
+	client.SAdd(ctx, key, "four", "five")
+	res3 := client.SPopN(ctx, key, 3)
+	t.Log(res3)
+	res2 = client.SMembers(ctx, key)
+	t.Log(res2)
+}
