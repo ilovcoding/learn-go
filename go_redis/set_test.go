@@ -1,6 +1,8 @@
 package go_redis
 
-import "testing"
+import (
+	"testing"
+)
 
 const setKey = "test:set:key"
 
@@ -147,5 +149,50 @@ func TestSUnionStore(t *testing.T) {
 }
 
 func TestScan(t *testing.T) {
+	res := client.Scan(ctx, 0, "", 0)
+	t.Log(res)
+	page, cursor, err := res.Result()
+	t.Log(page)
+	t.Log(cursor)
+	t.Log(err)
+	res = client.Scan(ctx, 28, "", 0)
+	t.Log(res)
+	page, cursor, err = res.Result()
+	t.Log(page)
+	t.Log(cursor)
+	t.Log(err)
+	res = client.Scan(ctx, 38, "", 0)
+	t.Log(res)
+	page, cursor, err = res.Result()
+	t.Log(page)
+	t.Log(cursor)
+	t.Log(err)
+	res = client.Scan(ctx, 17, "", 0)
+	t.Log(res)
+	page, cursor, err = res.Result()
+	t.Log(page)
+	t.Log(cursor)
+	t.Log(err)
+	res = client.Scan(ctx, 29, "", 0)
+	t.Log(res)
+	page, cursor, err = res.Result()
+	t.Log(page)
+	t.Log(cursor)
+	t.Log(err)
+}
 
+func TestSScan(t *testing.T) {
+	client.SAdd(ctx, setKey, "foo", "feelsgood", "foobar", "0", "1", "2", 3, 4, 5, "a", "b")
+	res := client.SScan(ctx, setKey, 0, "f*", 11)
+	t.Log(res)
+	page, cursor, err := res.Result()
+	t.Log(page)
+	t.Log(cursor)
+	t.Log(err)
+	res = client.SScan(ctx, setKey, 0, "f*", 11)
+	t.Log(res)
+	page, cursor, err = res.Result()
+	t.Log(page)
+	t.Log(cursor)
+	t.Log(err)
 }
