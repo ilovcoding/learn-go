@@ -145,3 +145,7 @@ func TestSUnionStore(t *testing.T) {
 	res := client.SMembers(ctx, key)
 	t.Log(res)
 }
+
+func TestScan(t *testing.T) {
+
+}

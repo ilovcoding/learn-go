@@ -61,3 +61,13 @@ func TestTTL(t *testing.T) {
 	t.Log(client.Get(ctx, testExpireKey))
 	t.Log(res)
 }
+
+func TestKeys(t *testing.T) {
+	client.MSet(ctx, "firstname", "Jack", "lastname", "Stuntman", "age", 35)
+	res := client.Keys(ctx, "*name*")
+	t.Log(res)
+	res = client.Keys(ctx, "a??")
+	t.Log(res)
+	res = client.Keys(ctx, "*")
+	t.Log(res)
+}
