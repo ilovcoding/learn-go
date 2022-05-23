@@ -1,6 +1,7 @@
 package go_redis
 
 import (
+	"github.com/go-redis/redis/v8"
 	"testing"
 )
 
@@ -148,6 +149,7 @@ func TestSUnionStore(t *testing.T) {
 	t.Log(res)
 }
 
+// iterate 模式，遍历redis中的key可用于翻页等
 func TestScan(t *testing.T) {
 	res := client.Scan(ctx, 0, "", 0)
 	t.Log(res)
@@ -181,6 +183,7 @@ func TestScan(t *testing.T) {
 	t.Log(err)
 }
 
+// iterate 模式迭代 某一个 set 中 含有的元素。
 func TestSScan(t *testing.T) {
 	client.SAdd(ctx, setKey, "foo", "feelsgood", "foobar", "0", "1", "2", 3, 4, 5, "a", "b")
 	res := client.SScan(ctx, setKey, 0, "f*", 11)
@@ -195,4 +198,22 @@ func TestSScan(t *testing.T) {
 	t.Log(page)
 	t.Log(cursor)
 	t.Log(err)
+}
+
+func TestTypeScan(t *testing.T) {
+	client.ZAdd(ctx, "zKey1", &redis.Z{Score: 100, Member: "value1"})
+	client.ZAdd(ctx, "zKey2", &redis.Z{Score: 0, Member: "value2"})
+	t.Log(client.Type(ctx, "zKey1"))
+	res := client.ScanType(ctx, 0, "zK*", 0, "zset")
+	t.Log(res.Result())
+	res = client.ScanType(ctx, 28, "zK*", 0, "zset")
+	t.Log(res.Result())
+	res = client.ScanType(ctx, 38, "zK*", 0, "zset")
+	t.Log(res.Result())
+	res = client.ScanType(ctx, 17, "zK*", 0, "zset")
+	t.Log(res.Result())
+	res = client.ScanType(ctx, 21, "zK*", 0, "zset")
+	t.Log(res.Result())
+	res = client.ScanType(ctx, 47, "zK*", 0, "zset")
+	t.Log(res.Result())
 }
