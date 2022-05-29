@@ -41,6 +41,21 @@ func TestZIncrBy(t *testing.T) {
 	t.Log(res)
 }
 
+func TestZRank(t *testing.T) {
+	res := client.ZRangeWithScores(ctx, zSetKey, 0, -1)
+	t.Log(res)
+	res2 := client.ZRank(ctx, zSetKey, "one")
+	t.Log(res2)
+	res2 = client.ZRank(ctx, zSetKey, "uno")
+	t.Log(res2)
+	res2 = client.ZRank(ctx, zSetKey, "two")
+	t.Log(res2)
+	res2 = client.ZRank(ctx, zSetKey, "z_two")
+	t.Log(res2)
+	res2 = client.ZRank(ctx, zSetKey, "three")
+	t.Log(res2)
+}
+
 func TestZScore(t *testing.T) {
 	res := client.ZScore(ctx, zSetKey, "one")
 	t.Log(res)
