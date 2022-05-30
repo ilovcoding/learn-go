@@ -21,3 +21,22 @@ func TestBitCount(t *testing.T) {
 	res = client.BitCount(ctx, bitMapKey, &redis.BitCount{Start: 5, End: 30})
 	t.Log(res)
 }
+
+func TestBitField(t *testing.T) {
+	defer func() {
+		client.Del(ctx, bitMapKey)
+	}()
+	client.SetBit(ctx, bitMapKey, 0, 0)
+	t.Log(client.Get(ctx, bitMapKey))
+	res := client.BitCount(ctx, bitMapKey, &redis.BitCount{Start: 0, End: -1})
+	t.Log(res)
+	//BITFIELD mykey INCRBY i5 100 1 GET u4 0
+	// 0000000001 (i5 5 1 = 1) 0111 (u10 0 = 1)
+	res2 := client.BitField(ctx, bitMapKey, "INCRBY", "i5", 5, 1, "GET", "u10", 0)
+	t.Log(res2)
+	// 0111100001( "i5", 0, 15) (U10 0=1+32+64+128+256=481)
+	res2 = client.BitField(ctx, bitMapKey, "INCRBY", "i5", 0, 15, "GET", "u10", 0)
+	t.Log(res2)
+	res = client.BitCount(ctx, bitMapKey, &redis.BitCount{Start: 0, End: -1})
+	t.Log(res)
+}
