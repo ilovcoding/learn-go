@@ -26,7 +26,7 @@ func TestBitField(t *testing.T) {
 	defer func() {
 		client.Del(ctx, bitMapKey)
 	}()
-	client.SetBit(ctx, bitMapKey, 0, 0)
+	client.Set(ctx, bitMapKey, 0, 0)
 	t.Log(client.Get(ctx, bitMapKey))
 	res := client.BitCount(ctx, bitMapKey, &redis.BitCount{Start: 0, End: -1})
 	t.Log(res)
@@ -39,4 +39,51 @@ func TestBitField(t *testing.T) {
 	t.Log(res2)
 	res = client.BitCount(ctx, bitMapKey, &redis.BitCount{Start: 0, End: -1})
 	t.Log(res)
+}
+
+// 在多个key之间进行二进制位操作
+func TestBitOP(t *testing.T) {
+	key1 := "test:bit_map:key1"
+	key2 := "test:bit_map:key2"
+	key3 := "test:bit_map:key3"
+
+	defer func() {
+		client.Del(ctx, key1, key2, key3)
+	}()
+
+	// AND 与
+	// 00110001 (49)
+	client.Set(ctx, key1, 1, 0)
+	// 00110010 (50)
+	client.Set(ctx, key2, 2, 0)
+	// 00110000 (48) 0
+	client.BitOpAnd(ctx, key3, key1, key2)
+	t.Log(client.Get(ctx, key3))
+	// OR 或
+	// 00110011 (51) 3
+	client.BitOpOr(ctx, key3, key1, key2)
+	t.Log(client.Get(ctx, key3))
+	// NOT 非
+	// 11001110 (206)
+	client.BitOpNot(ctx, key3, key1)
+	t.Log(client.GetBit(ctx, key3, 0))
+	t.Log(client.GetBit(ctx, key3, 1))
+	t.Log(client.GetBit(ctx, key3, 2))
+	t.Log(client.GetBit(ctx, key3, 3))
+	t.Log(client.GetBit(ctx, key3, 4))
+	t.Log(client.GetBit(ctx, key3, 5))
+	t.Log(client.GetBit(ctx, key3, 6))
+	t.Log(client.GetBit(ctx, key3, 7))
+	// XOR 异或
+	// 00000011 （3）
+	client.BitOpXor(ctx, key3, key1, key2)
+	t.Log(client.Get(ctx, key3))
+	t.Log(client.GetBit(ctx, key3, 0))
+	t.Log(client.GetBit(ctx, key3, 1))
+	t.Log(client.GetBit(ctx, key3, 2))
+	t.Log(client.GetBit(ctx, key3, 3))
+	t.Log(client.GetBit(ctx, key3, 4))
+	t.Log(client.GetBit(ctx, key3, 5))
+	t.Log(client.GetBit(ctx, key3, 6))
+	t.Log(client.GetBit(ctx, key3, 7))
 }
