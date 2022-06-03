@@ -22,6 +22,7 @@ func TestBitCount(t *testing.T) {
 	t.Log(res)
 }
 
+// 再指定的位置进行一组二进制位的操作 可能不常用
 func TestBitField(t *testing.T) {
 	defer func() {
 		client.Del(ctx, bitMapKey)
@@ -86,4 +87,28 @@ func TestBitOP(t *testing.T) {
 	t.Log(client.GetBit(ctx, key3, 5))
 	t.Log(client.GetBit(ctx, key3, 6))
 	t.Log(client.GetBit(ctx, key3, 7))
+}
+
+// 返回字符串中 指定位置1或0的第一个位置
+func TestPos(t *testing.T) {
+	key := "test:bit_pos:key"
+	defer func() {
+		client.Del(ctx, key)
+	}()
+	// 设置第1位为1
+	client.SetBit(ctx, key, 0, 1)
+	// 设置第2位为1
+	client.SetBit(ctx, key, 1, 1)
+	// 获取第一个是 0的位置 偏移量 0字节
+	t.Log(client.BitPos(ctx, key, 0))
+	// 获取第一个是 1的位置 偏移量 0字节
+	t.Log(client.BitPos(ctx, key, 1, 0))
+	// 获取第一个是 1的位置 偏移量 2字节
+	t.Log(client.BitPos(ctx, key, 1, 2))
+	// 设置第16位为1
+	client.SetBit(ctx, key, 15, 1)
+	// 设置第18位为1
+	client.SetBit(ctx, key, 17, 1)
+	// 获取第一个是 1的位置 偏移量 2字节
+	t.Log(client.BitPos(ctx, key, 1, 2))
 }
