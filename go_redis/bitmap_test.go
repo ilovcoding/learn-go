@@ -112,3 +112,14 @@ func TestPos(t *testing.T) {
 	// 获取第一个是 1的位置 偏移量 2字节
 	t.Log(client.BitPos(ctx, key, 1, 2))
 }
+
+func TestSetBit(t *testing.T) {
+	key := "test:set_bit:key"
+	client.SetBit(ctx, key, 2, 1)
+	client.SetBit(ctx, key, 3, 1)
+	client.SetBit(ctx, key, 5, 1)
+	client.SetBit(ctx, key, 10, 1)
+	client.SetBit(ctx, key, 11, 1)
+	client.SetBit(ctx, key, 14, 1)
+	t.Log(client.Get(ctx, key))
+}
