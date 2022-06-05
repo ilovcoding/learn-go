@@ -8,3 +8,14 @@ func TestPFAdd(t *testing.T) {
 	t.Log(res)
 	t.Log(client.PFCount(ctx, key))
 }
+
+func TestPFCount(t *testing.T) {
+	key1 := "hll"
+	key2 := "some-other-hl"
+	client.PFAdd(ctx, key1, "foo", "bar", "zap")
+	client.PFAdd(ctx, key1, "zap", "zap", "zap")
+	client.PFAdd(ctx, key1, "foo", "bar")
+	t.Log(client.PFCount(ctx, key1))
+	client.PFAdd(ctx, key2, 1, 2, 3)
+	t.Log(client.PFCount(ctx, key1, key2))
+}
