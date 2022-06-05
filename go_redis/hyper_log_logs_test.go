@@ -19,3 +19,13 @@ func TestPFCount(t *testing.T) {
 	client.PFAdd(ctx, key2, 1, 2, 3)
 	t.Log(client.PFCount(ctx, key1, key2))
 }
+
+func TestPFMerge(t *testing.T) {
+	key1 := "hll"
+	key2 := "hll2"
+	key3 := "hll3"
+	client.PFAdd(ctx, key1, "foo", "bar", "zap", "a")
+	client.PFAdd(ctx, key2, "a", "b", "c", "foo")
+	client.PFMerge(ctx, key3, key1, key2)
+	t.Log(client.PFCount(ctx, key3))
+}
