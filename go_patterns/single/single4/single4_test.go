@@ -14,7 +14,7 @@ type Tools struct {
 var instance *Tools
 var mu sync.Mutex
 
-func getInstance() *Tools {
+func GetInstance() *Tools {
 	if instance == nil {
 		mu.Lock()
 		defer mu.Unlock()
@@ -24,7 +24,6 @@ func getInstance() *Tools {
 				value: "",
 			}
 		}
-
 	}
 	return instance
 }
@@ -32,7 +31,7 @@ func getInstance() *Tools {
 func TestClient(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		go func() {
-			inst := getInstance()
+			inst := GetInstance()
 			fmt.Printf("%p \n", inst)
 		}()
 	}

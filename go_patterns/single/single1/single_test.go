@@ -12,7 +12,7 @@ type Tools struct {
 
 var instance *Tools
 
-func getInstance() *Tools {
+func GetInstance() *Tools {
 	if instance == nil {
 		time.Sleep(time.Second)
 		instance = &Tools{
@@ -25,7 +25,7 @@ func getInstance() *Tools {
 func TestClient(t *testing.T) {
 	for i := 0; i < 10; i++ {
 		go func() {
-			inst := getInstance()
+			inst := GetInstance()
 			fmt.Printf("%p \n", inst)
 		}()
 	}

@@ -18,7 +18,7 @@ func init() {
 		value: "",
 	}
 }
-func getInstance() *Tools {
+func GetInstance() *Tools {
 	time.Sleep(time.Second)
 	return instance
 }
@@ -26,7 +26,7 @@ func getInstance() *Tools {
 func TestClient(t *testing.T) {
 	for i := 0; i < 20; i++ {
 		go func() {
-			inst := getInstance()
+			inst := GetInstance()
 			fmt.Printf("%p \n", inst)
 		}()
 	}
