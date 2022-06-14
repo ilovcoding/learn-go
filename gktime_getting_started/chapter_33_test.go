@@ -41,15 +41,19 @@ func (p *ObjectPool) ReleaseObject(object *ReusableObject) error {
 
 func TestObjectPool(t *testing.T) {
 	pool := NewObjectPool(10)
+	// 满的对象池多放一个变量会有溢出错误
+	if err := pool.ReleaseObject(&ReusableObject{}); err != nil {
+		t.Error(err)
+	}
 	for i := 0; i < 11; i++ {
 		if v, err := pool.GetObject(time.Second); err != nil {
 			t.Error(err)
 		} else {
 			t.Logf("%p", &v)
 			// 使用完了释放对象
-			if err := pool.ReleaseObject(v); err != nil {
-				t.Error(err)
-			}
+			//if err := pool.ReleaseObject(v); err != nil {
+			//	t.Error(err)
+			//}
 		}
 	}
 }
